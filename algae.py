@@ -16,4 +16,4 @@ def algae() -> LSystem:
     )
     
 if __name__ == '__main__':
-    pprint(algae().to_graph(4))
+    pprint(algae().get_graph(4))

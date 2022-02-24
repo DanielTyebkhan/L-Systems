@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from multiprocessing.sharedctypes import Value
-from typing import List, Set
+from typing import Dict, List, Set
 
 
 @dataclass(frozen=True)
@@ -26,7 +25,7 @@ class LSystem:
     axiom: Set[str]
     productions: Set[Production]
 
-    def to_graph(self, iterations):
+    def get_graph(self, iterations: int) -> Dict:
         __id = -1
         def make_node(label: str) -> Node:
             nonlocal __id

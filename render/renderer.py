@@ -1,20 +1,26 @@
 import os
+from typing import Dict
 import graphviz
 
-from grammar.LSystem import LSystem
+from grammar.LSystem import Node, LSystem
 RENDER_PATH = os.path.join('renderings')
 
+def __dfs(graph: Dict[Node, Dict], parent: Node, dot: graphviz.Digraph):
+    if graph == {}:
+        return
+    for node in graph:
+        dot.node(str(node.id), label=node.label)
+        if parent:
+            dot.edge(str(parent.id), str(node.id))
+        __dfs(graph[node], node, dot)
+
+
 def system_to_graphviz(system: LSystem, iterations: int, name: str) -> graphviz.Digraph:
+    graph = system.get_graph(iterations)
     dot = graphviz.Digraph(comment=name)
-    __curr_id = -1
-    def add_node(label) -> int:
-        nonlocal __curr_id
-        __curr_id += 1
-        dot.node(__curr_id, label=label)
-        return __curr_id
-    generation = []
-    for var in system.axiom:
-        generation.append(add_node(var))
+    __dfs(graph, None, dot)
+    return dot
+
 
 def local_render(dot: graphviz.dot.Dot):
     if not os.path.isdir(RENDER_PATH):
