@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from l_systems.LSystem import LSystem, Node, Production, Axiom
+from src.l_systems.LSystem import LSystem, Node, Production, Axiom
 
 
 A = 'A'
@@ -9,7 +9,7 @@ B = 'B'
 
 def algae() -> LSystem:
     """
-    Creates Lindenmayer's L-system for modeling the biological growth of algae
+    Lindenmayer's L-system for modeling the biological growth of algae
     """
     return LSystem(
         [Axiom(A)], 
