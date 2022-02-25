@@ -6,12 +6,12 @@ from grammar.LSystem import Node, LSystem
 RENDER_PATH = os.path.join('renderings')
 
 def __dfs(graph: Dict[Node, Dict], parent: Node, dot: graphviz.Digraph):
-    if graph == {}:
-        return
     for node in graph:
-        dot.node(str(node.id), label=node.label)
+        id = str(node.id)
+        pid = str(parent.id)
+        dot.node(id, label=node.label)
         if parent:
-            dot.edge(str(parent.id), str(node.id))
+            dot.edge(pid, id)
         __dfs(graph[node], node, dot)
 
 
