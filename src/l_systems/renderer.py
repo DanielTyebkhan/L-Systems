@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Optional
 import graphviz
 
 from src.l_systems.LSystem import LSystem, Node
@@ -7,7 +7,7 @@ from src.l_systems.LSystem import LSystem, Node
 RENDER_PATH = os.path.join('renderings')
 
 
-def __dfs(graph: Dict[Node, Dict], parent: Node, dot: graphviz.Digraph):
+def __dfs(graph: Dict[Node, Dict], parent: Optional[Node], dot: graphviz.Digraph):
     for node in graph:
         nid = str(node.id)
         dot.node(nid, label=node.label)
@@ -24,7 +24,7 @@ def system_to_graphviz(system: LSystem, iterations: int, name: str) -> graphviz.
     return dot
 
 
-def local_render(dot: graphviz.dot.Dot):
+def local_render(dot: graphviz.Digraph):
     if not os.path.isdir(RENDER_PATH):
         os.makedirs(RENDER_PATH)
     dot.render(directory=RENDER_PATH, filename=dot.comment)
