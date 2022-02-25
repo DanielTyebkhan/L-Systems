@@ -2,7 +2,7 @@ import os
 from typing import Dict
 import graphviz
 
-from grammar.LSystem import Node, LSystem
+from LSystem import Node, LSystem
 RENDER_PATH = os.path.join('renderings')
 
 def __dfs(graph: Dict[Node, Dict], parent: Node, dot: graphviz.Digraph):

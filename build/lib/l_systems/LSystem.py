@@ -5,8 +5,6 @@ from symtable import Symbol
 from typing import Callable, Dict, List, Set, Union
 import uuid
 
-from numpy import isin
-
 from util import flat_map, flatten
 
 
@@ -21,6 +19,9 @@ Symbollike = str
 
 @dataclass(unsafe_hash=True)
 class Node(Leafable):
+    """
+    Node class for L system graph. DO NOT MUTATE PROPERTIES
+    """
     label: Symbollike
     id: uuid.UUID
     __is_leaf: bool = False # production rules are not applied to leaves

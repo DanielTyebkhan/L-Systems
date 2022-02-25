@@ -1,10 +1,11 @@
 from pprint import pprint
-from grammar.LSystem import Axiom, LSystem, Node, Production
 
-from render.renderer import local_render
+from l_systems.LSystem import LSystem, Node, Production, Axiom
+
 
 A = 'A'
 B = 'B'
+
 
 def algae() -> LSystem:
     """
