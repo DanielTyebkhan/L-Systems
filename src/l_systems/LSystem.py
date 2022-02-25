@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional
 import uuid
 
 from src.l_systems import util
@@ -15,32 +15,45 @@ class Leafable(ABC):
 SymbolLike = str
 
 
-@dataclass(unsafe_hash=True)
+@dataclass
+class NodeStyle:
+    solid: bool = False
+    visible: bool = True
+
+
 class Node(Leafable):
     """
     Node class for L system graph.
-    IMPORTANT: DO NOT MUTATE PROPERTIES
     """
-    label: SymbolLike
-    id: uuid.UUID
-    __is_leaf: bool  # production rules are not applied to leaves
-
-    def __init__(self, label: str, is_leaf: bool = False):
+    def __init__(self, label: SymbolLike, is_leaf: bool = False, style: NodeStyle = None):
         self.label = label
-        self.__is_leaf = is_leaf
+        self.__is_leaf = is_leaf  # production rules are not applied to leaves
         self.id = uuid.uuid4()
+        self.style = style or NodeStyle()
 
     def is_leaf(self):
         return self.__is_leaf
 
+    def __hash__(self):
+        return self.id.int
+
+    def __eq__(self, other):
+        if isinstance(other, Node):
+            return self.id == other.id
+        return super().__eq__(other)
+
 
 NodeFactory = Callable[[], List[Node]]
 
-    
-@dataclass(frozen=True)
+
 class Axiom(Leafable):
-    symbol: SymbolLike
-    __is_leaf: bool = False
+    def __init__(
+            self, symbol: SymbolLike, is_leaf: bool = False,
+            node: Optional[Node] = None
+    ):
+        self.symbol = symbol
+        self.__is_leaf = is_leaf
+        self.node = node or Node(symbol, is_leaf=is_leaf)
 
     def is_leaf(self) -> bool:
         return self.__is_leaf
@@ -50,13 +63,13 @@ class Axiom(Leafable):
 class Production:
     predecessor: SymbolLike
     successor_generator: Callable[[], List[Node]]
-    
+
     def apply(self, node: Node) -> List[Node]:
         if not node.is_leaf() and self.predecessor == node.label:
             return self.successor_generator()
         return []
 
-        
+
 LSysGraph = Dict[Node, "LSysGraph"]
 
 
@@ -67,14 +80,14 @@ class LSystem:
     TODO: constructor to validate productions against axioms 
           to enforce determinism and valid entries
     """
-    axiom: List[Axiom] 
-    productions: List[Production] 
+    axiom: List[Axiom]
+    productions: List[Production]
 
     def get_graph(self, iterations: int) -> LSysGraph:
         graph = {}
         generation = []
         for a in self.axiom:
-            node = Node(a.symbol, a.is_leaf())
+            node = a.node
             graph[node] = {}
             generation.append((node, graph[node]))
         if iterations > 0:
