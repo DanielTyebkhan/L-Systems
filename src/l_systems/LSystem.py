@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Callable, Dict, List
 import uuid
 
-from l_systems import util
+from src.l_systems import util
 
 
 class Leafable(ABC):
@@ -12,19 +12,20 @@ class Leafable(ABC):
         ...
 
 
-Symbollike = str
+SymbolLike = str
 
 
 @dataclass(unsafe_hash=True)
 class Node(Leafable):
     """
-    Node class for L system graph. DO NOT MUTATE PROPERTIES
+    Node class for L system graph.
+    IMPORTANT: DO NOT MUTATE PROPERTIES
     """
-    label: Symbollike
+    label: SymbolLike
     id: uuid.UUID
-    __is_leaf: bool = False # production rules are not applied to leaves
+    __is_leaf: bool  # production rules are not applied to leaves
 
-    def __init__(self, label: str, is_leaf: bool):
+    def __init__(self, label: str, is_leaf: bool = False):
         self.label = label
         self.__is_leaf = is_leaf
         self.id = uuid.uuid4()
@@ -38,7 +39,7 @@ NodeFactory = Callable[[], List[Node]]
     
 @dataclass(frozen=True)
 class Axiom(Leafable):
-    symbol: Symbollike
+    symbol: SymbolLike
     __is_leaf: bool = False
 
     def is_leaf(self) -> bool:
@@ -47,11 +48,11 @@ class Axiom(Leafable):
 
 @dataclass(frozen=True)
 class Production:
-    predecessor: Symbollike
+    predecessor: SymbolLike
     successor_generator: Callable[[], List[Node]]
     
     def apply(self, node: Node) -> List[Node]:
-        if not node.is_leaf() and self.predecessor == node.id:
+        if not node.is_leaf() and self.predecessor == node.label:
             return self.successor_generator()
         return []
 
@@ -86,5 +87,3 @@ class LSystem:
                         next_gen.append((new_node, entry[new_node]))
                 generation = next_gen
         return graph
-
-

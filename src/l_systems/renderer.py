@@ -2,16 +2,18 @@ import os
 from typing import Dict
 import graphviz
 
-from LSystem import Node, LSystem
+from src.l_systems.LSystem import LSystem, Node
+
 RENDER_PATH = os.path.join('renderings')
+
 
 def __dfs(graph: Dict[Node, Dict], parent: Node, dot: graphviz.Digraph):
     for node in graph:
-        id = str(node.id)
-        pid = str(parent.id)
-        dot.node(id, label=node.label)
+        nid = str(node.id)
+        dot.node(nid, label=node.label)
         if parent:
-            dot.edge(pid, id)
+            pid = str(parent.id)
+            dot.edge(pid, nid)
         __dfs(graph[node], node, dot)
 
 

@@ -1,7 +1,7 @@
 
 import sys
-from l_systems.models.algae import algae
-from l_systems.renderer import local_render, system_to_graphviz
+from src.models.algae import algae
+from src.l_systems.renderer import local_render, system_to_graphviz
 
 KEYWORD_MAP = {
     'algae': algae
